@@ -21,13 +21,13 @@ export function Navbar() {
           <button onClick={scrollToTop} className="flex items-center">
             <div className="relative h-8 w-8 overflow-hidden rounded-full  md:h-10 md:w-10">
               <Image
-                src="/HP-logo.png"
+                src="./HP-logo.png"
                 alt="Logo Dark"
                 fill
                 className="object-cover object-center dark:hidden"
               />
               <Image
-                src="/HP-logo-light.png"
+                src="./HP-logo-light.png"
                 alt="Logo Light"
                 fill
                 className="object-cover object-center hidden dark:block"

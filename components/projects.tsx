@@ -19,31 +19,31 @@ export function Projects() {
     {
       title: "Priority Calculator Plus",
       description: "Manage your work-load with Priority Calculator Plus, an all-in-one productivity platform for scheduling and optimizing your time management.",
-      image: "/project1.png",
+      image: "./project1.png",
       github: "https://github.com/HarsukritP/PriorityCalculatorPlus",
     },
     {
       title: "CIFAR-10 Image Classifier",
       description: "An ML model based on the CIFAR-10 database, to recognize and classify any image, with 95% accuracy and 94% improved efficiency.",
-      image: "/project2.png",
+      image: "./project2.png",
       github: "https://github.com/HarsukritP/CIFAR10-Image-Classifier",
     },
     {
       title: "UW Orbital Team Member",
       description: "A member of the University of Waterloo Orbital Design Team, working specifically with the Thermal Firmware on the CubeSat.",
-      image: "/project3.png",
+      image: "./project3.png",
       github: "https://www.uworbital.com/",
     },
     {
       title: "Dormitory Security Alarm System",
       description: "Created a dorm room security device to track valuables, detect break-ins and alert users to protect them and their valuables.",
-      image: "/project4.png",
+      image: "./project4.png",
       github: "https://github.com/HarsukritP/ECE198-Alarm-System",
     },
     {
       title: "Elden Ring Weapons Browser",
       description: "Utilizes scraped data from the video game to simulate weapon stats for 1000+ cases by utilizing OOP to factor in game conditions.",
-      image: "/project5.png",
+      image: "./project5.png",
       github: "https://github.com/HarsukritP/EldenRingWeaponBrowser",
     },
   ]

@@ -88,7 +88,7 @@ export function About() {
       <div className="mb-16 flex flex-col items-center">
         <div className="relative mb-12 h-40 w-40 overflow-hidden rounded-full bg-primary sm:h-56 sm:w-56">
           <Image
-            src="/Portrait.PNG"
+            src="./Portrait.PNG"
             alt="Harsukrit Pall"
             fill
             className="object-cover object-top"
