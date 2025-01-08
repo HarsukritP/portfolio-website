@@ -22,7 +22,7 @@ const nextConfig = {
     parallelServerCompiles: true,
   },
   output: 'export',
-  basePath: '/portfolio-website'
+  basePath: ''
 }
 
 mergeConfig(nextConfig, userConfig)
