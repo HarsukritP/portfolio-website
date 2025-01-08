@@ -7,28 +7,33 @@ interface Experience {
   title: string
   description: string
   icon: React.ReactNode
+  tools: string[]
 }
 
 const experiences: Experience[] = [
   { 
     title: "Programming Instructor @ Code Ninjas",
     description: "Worked with a team to teach game development, robotics and programming fundamentals with propietary platforms such as Unity, MakeCode, and VSCode to 200+ students of various ages.",
-    icon: "💻"
+    icon: "💻",
+    tools: ["Unity", "MakeCode", "VSCode"]
   },
   { 
     title: "Financial Officer @ WilderCare",
     description: "Worked with 9 partners to help found a non-profit to support the Oakville Milton Humane Society through bracelet sales, social media and our React-based website.",
-    icon: "💰"
+    icon: "💰",
+    tools: ["React", "Social Media"]
   },
   { 
     title: "Firmware Developer @ Orbit Robotics",
     description: "Developed firmware for our team robot, by using WPILib, Java and GitHub to compete in the FIRST Robotics Competition at a Regional Level.",
-    icon: "🤖"
+    icon: "🤖",
+    tools: ["WPILib", "Java", "GitHub"]
   },
   { 
     title: "Sponsorships Chair @ TEDxIroquoisRidgeHS",
     description: "Spearheaded communications with sponsors, venue staff and more to organize a TED talk for 200+ guests and secured over $500 in funding.",
-    icon: "🗣️"
+    icon: "🗣️",
+    tools: ["Communication", "Event Planning"]
   }
 ]
 
@@ -77,7 +82,14 @@ const TiltCard: React.FC<{ experience: Experience }> = ({ experience }) => {
       <div style={{ transform: "translateZ(75px)" }}>
         <div className="text-4xl mb-4">{experience.icon}</div>
         <h3 className="text-xl font-bold mb-2">{experience.title}</h3>
-        <p className="text-sm text-muted-foreground">{experience.description}</p>
+        <p className="text-sm text-muted-foreground mb-4">{experience.description}</p>
+        <div className="flex flex-wrap gap-2">
+          {experience.tools.map((tool, index) => (
+            <span key={index} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+              {tool}
+            </span>
+          ))}
+        </div>
       </div>
     </motion.div>
   )

@@ -12,6 +12,7 @@ interface Project {
   description: string
   image: string
   github: string
+  tools: string[]
 }
 
 export function Projects() {
@@ -21,30 +22,35 @@ export function Projects() {
       description: "Manage your work-load with Priority Calculator Plus, an all-in-one productivity platform for scheduling and optimizing your time management.",
       image: "./project1.png",
       github: "https://github.com/HarsukritP/PriorityCalculatorPlus",
+      tools: ["React", "Node.js", "Express", "MongoDB"]
     },
     {
       title: "CIFAR-10 Image Classifier",
       description: "An ML model based on the CIFAR-10 database, to recognize and classify any image, with 95% accuracy and 94% improved efficiency.",
       image: "./project2.png",
       github: "https://github.com/HarsukritP/CIFAR10-Image-Classifier",
+      tools: ["Python", "TensorFlow", "Keras", "NumPy"]
     },
     {
       title: "UW Orbital Team Member",
       description: "A member of the University of Waterloo Orbital Design Team, working specifically with the Thermal Firmware on the CubeSat.",
       image: "./project3.png",
       github: "https://www.uworbital.com/",
+      tools: ["C++", "Embedded Systems", "Thermal Analysis"]
     },
     {
       title: "Dormitory Security Alarm System",
       description: "Created a dorm room security device to track valuables, detect break-ins and alert users to protect them and their valuables.",
       image: "./project4.png",
       github: "https://github.com/HarsukritP/ECE198-Alarm-System",
+      tools: ["Arduino", "C++", "IoT"]
     },
     {
       title: "Elden Ring Weapons Browser",
       description: "Utilizes scraped data from the video game to simulate weapon stats for 1000+ cases by utilizing OOP to factor in game conditions.",
       image: "./project5.png",
       github: "https://github.com/HarsukritP/EldenRingWeaponBrowser",
+      tools: ["Python", "BeautifulSoup", "Pandas", "OOP"]
     },
   ]
 
@@ -110,6 +116,13 @@ export function Projects() {
                     <div className="flex h-full flex-col items-center justify-center p-6 text-center">
                       <h3 className="mb-4 text-3xl font-bold sm:text-4xl text-white">{projects[currentIndex].title}</h3>
                       <p className="mb-8 max-w-2xl text-lg sm:text-xl text-white/90">{projects[currentIndex].description}</p>
+                      <div className="flex flex-wrap justify-center gap-2 mb-8">
+                        {projects[currentIndex].tools.map((tool, index) => (
+                          <span key={index} className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
                       <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                         <Link 
                           href={projects[currentIndex].github} 

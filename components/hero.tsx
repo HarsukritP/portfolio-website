@@ -16,7 +16,7 @@ export function Hero() {
       text: "I'm",
     },
     {
-      text: "Harsukrit!",
+      text: "Harsukrit",
     }
   ]
 
