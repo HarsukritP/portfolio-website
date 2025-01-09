@@ -13,7 +13,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="./HP-logo-circle.svg" type="image/svg+xml" />
+        <title>Harsukrit Pall | Portfolio</title>
+        <link rel="icon" href="./HP-logo-circle.png"/>
       </head>
       <body className={inter.className}>
         <ThemeProvider
