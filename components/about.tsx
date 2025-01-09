@@ -96,12 +96,19 @@ export function About() {
         </div>
         <h2 className="mb-8 text-center text-3xl font-bold sm:text-4xl">About Me</h2>
         <div className="prose prose-lg dark:prose-invert text-center max-w-2xl">
-          <p>
-            I am a dedicated engineer with a specific interest in 
+          <p className="py-10">
+            I am a dedicated Computer Engineer at UW with a specific interest in 
             blending software, hardware, and AI technologies to create 
             intuitive and impactful solutions. My passion lies in turning 
             complex challenges into elegant systems through a combination 
             of technical precision and artistic thinking.
+          </p>
+
+          <p>
+            I attribute my passion and inspiration for making impactful software and 
+            hardware solutions to the inspiring pieces of media around me all throughout 
+            my life. This includes everything from my note-taking app, to my favourite 
+            video games.
           </p>
 
           <p className="py-10">

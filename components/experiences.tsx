@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 interface Experience {
   title: string
+  company: string
   description: string
   icon: React.ReactNode
   tools: string[]
@@ -12,28 +13,32 @@ interface Experience {
 
 const experiences: Experience[] = [
   { 
-    title: "Programming Instructor @ Code Ninjas",
+    title: "Programming & Game Development Instructor",
+    company: "Code Ninjas",
     description: "Worked with a team to teach game development, robotics and programming fundamentals with propietary platforms such as Unity, MakeCode, and VSCode to 200+ students of various ages.",
     icon: "💻",
     tools: ["Unity", "MakeCode", "VSCode"]
   },
   { 
-    title: "Financial Officer @ WilderCare",
+    title: "Financial Officer",
+    company: "WilderCare",
     description: "Worked with 9 partners to help found a non-profit to support the Oakville Milton Humane Society through bracelet sales, social media and our React-based website.",
     icon: "💰",
     tools: ["React", "Social Media"]
   },
   { 
-    title: "Firmware Developer @ Orbit Robotics",
+    title: "Programmer",
+    company: "Orbit Robotics",
     description: "Developed firmware for our team robot, by using WPILib, Java and GitHub to compete in the FIRST Robotics Competition at a Regional Level.",
     icon: "🤖",
     tools: ["WPILib", "Java", "GitHub"]
   },
   { 
-    title: "Sponsorships Chair @ TEDxIroquoisRidgeHS",
-    description: "Spearheaded communications with sponsors, venue staff and more to organize a TED talk for 200+ guests and secured over $500 in funding.",
-    icon: "🗣️",
-    tools: ["Communication", "Event Planning"]
+    title: "Firmware Developer",
+    company: "UW Orbital",
+    description: "Contributed to the development of thermal control systems for CubeSat, implementing efficient algorithms for temperature regulation in space environments.",
+    icon: "🛰️",
+    tools: ["C++", "FreeRTOS", "Git"]
   }
 ]
 
@@ -81,7 +86,8 @@ const TiltCard: React.FC<{ experience: Experience }> = ({ experience }) => {
     >
       <div style={{ transform: "translateZ(75px)" }}>
         <div className="text-4xl mb-4">{experience.icon}</div>
-        <h3 className="text-xl font-bold mb-2">{experience.title}</h3>
+        <h3 className="text-xl font-bold mb-1">{experience.title}</h3>
+        <p className="text-sm text-muted-foreground mb-2">{experience.company}</p>
         <p className="text-sm text-muted-foreground mb-4">{experience.description}</p>
         <div className="flex flex-wrap gap-2">
           {experience.tools.map((tool, index) => (
