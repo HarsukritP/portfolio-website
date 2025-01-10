@@ -111,7 +111,7 @@ export function Projects() {
                       <p className="mb-8 max-w-2xl text-lg sm:text-xl text-white/90">{projects[currentIndex].description}</p>
                       <div className="flex flex-wrap justify-center gap-2 mb-8">
                         {projects[currentIndex].tools.map((tool, index) => (
-                          <span key={index} className="text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
+                          <span key={index} className="text-xs bg-background text-primary px-2 py-1 rounded-full">
                             {tool}
                           </span>
                         ))}
