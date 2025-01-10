@@ -4,6 +4,9 @@ import { Contact } from "@/components/contact"
 import { About } from "@/components/about"
 import { Experiences } from "@/components/experiences"
 import { Footer } from "@/components/footer"
+import { Interactive } from "@/components/interactive"
+
+
 
 export default function Home() {
   return (
@@ -14,6 +17,7 @@ export default function Home() {
       <Experiences />
       <Contact />
       <Footer />
+      <Interactive />
     </>
   )
 }
