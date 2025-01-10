@@ -13,11 +13,11 @@ export default function Home() {
     <>
       <Hero />
       <About />
+      <Interactive />
       <Projects />
       <Experiences />
       <Contact />
       <Footer />
-      <Interactive />
     </>
   )
 }
