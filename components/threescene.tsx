@@ -1,11 +1,18 @@
 "use client"
 
-import React, { useRef, useState, Suspense } from 'react'
+import React, { useRef, useState, Suspense, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { cn } from '@/lib/utils'
-import { motion } from 'framer-motion'
+
+// Preload models immediately
+const models = [
+  '/models/controller.glb',
+  '/models/headphones.glb',
+  '/models/laptop.glb',
+  '/models/basketball.glb'
+].map(path => useGLTF.preload(path))
 
 interface Model3DProps {
   position: [number, number, number]
@@ -20,7 +27,8 @@ const calculateCircularPosition = (index: number, total: number, radius: number)
   return [x, 0.5, z]
 }
 
-const Model3D = ({ position, modelPath, scale = 1 }: Model3DProps) => {
+// Optimized Model3D component with instance reuse
+const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) => {
   const { scene } = useGLTF(modelPath)
   const [isHovered, setIsHovered] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
@@ -28,7 +36,6 @@ const Model3D = ({ position, modelPath, scale = 1 }: Model3DProps) => {
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
-
     const gravity = 9.8
     const springStrength = 15
     const damping = 0.8
@@ -45,21 +52,29 @@ const Model3D = ({ position, modelPath, scale = 1 }: Model3DProps) => {
     groupRef.current.rotation.y += delta * 0.5
   })
 
+  // Reuse the same scene instance
+  useEffect(() => {
+    if (groupRef.current) {
+      groupRef.current.add(scene.clone())
+    }
+  }, [scene])
+
   return (
     <group
       ref={groupRef}
       position={position}
+      scale={scale}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
-    >
-      <primitive object={scene.clone()} scale={scale} />
-    </group>
+    />
   )
-}
+})
+
+Model3D.displayName = 'Model3D'
 
 const LoadingScreen = () => (
   <div className="absolute bottom-4 right-4 text-sm text-muted-foreground">
-    Loading...
+    Loading 3D models...
   </div>
 )
 
@@ -82,20 +97,14 @@ const ThreeScene = () => {
 
   return (
     <section className="w-full min-h-screen bg-background">
-      <motion.h2 
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="text-4xl font-bold text-center py-8"
-      >
-        Things I Use Daily
-      </motion.h2>
-
-      <div className="w-screen h-[800px] bg-background">
+      <div className="w-screen h-[800px] bg-background border border-dashed border-primary/20"> {/* Debug outline */}
         <Suspense fallback={<LoadingScreen />}>
           <Canvas 
             shadows 
             camera={{ position: [0, 4, 8], fov: 75 }}
+            // Performance optimizations
+            dpr={[1, 2]} // Limit pixel ratio
+            performance={{ min: 0.5 }} // Allow frame drops for better performance
           >
             <color attach="background" args={['#020817']} />
             
@@ -148,12 +157,3 @@ const ThreeScene = () => {
 }
 
 export default ThreeScene
-
-// Preload models
-const models = [
-  '/models/controller.glb',
-  '/models/headphones.glb',
-  '/models/laptop.glb',
-  '/models/basketball.glb'
-]
-models.forEach(path => useGLTF.preload(path))
