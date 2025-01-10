@@ -123,7 +123,7 @@ const TiltCard: React.FC<{ experience: Experience }> = ({ experience }) => {
               {tool}
             </span>
           ))}
-        </div>g
+        </div>
       </div>
     </motion.div>
   )
