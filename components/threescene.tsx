@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
@@ -11,6 +11,13 @@ interface Model3DProps {
   position: [number, number, number]
   modelPath: string
   scale?: number
+}
+
+const calculateCircularPosition = (index: number, total: number, radius: number): [number, number, number] => {
+  const angle = (index / total) * Math.PI * 2 - Math.PI / 2
+  const x = Math.cos(angle) * radius * 1.5
+  const z = Math.sin(angle) * radius
+  return [x, 0.5, z]
 }
 
 const Model3D = ({ position, modelPath, scale = 1 }: Model3DProps) => {
@@ -50,21 +57,20 @@ const Model3D = ({ position, modelPath, scale = 1 }: Model3DProps) => {
   )
 }
 
-const calculateCircularPosition = (index: number, total: number, radius: number): [number, number, number] => {
-  const angle = (index / total) * Math.PI * 2 - Math.PI / 2
-  const x = Math.cos(angle) * radius * 1.5
-  const z = Math.sin(angle) * radius
-  return [x, 0.5, z]
-}
+const LoadingScreen = () => (
+  <div className="absolute bottom-4 right-4 text-sm text-muted-foreground">
+    Loading...
+  </div>
+)
 
 const Platform = () => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-      <planeGeometry args={[20, 10]} />
+      <planeGeometry args={[50, 25]} />
       <meshStandardMaterial 
         color="#020817"
         transparent
-        opacity={0.3}
+        opacity={0.1}
       />
     </mesh>
   )
@@ -72,29 +78,24 @@ const Platform = () => {
 
 const ThreeScene = () => {
   const totalItems = 4
-  const radius = 3.5
+  const radius = 5
 
   return (
-    <section className="h-screen w-full py-4">
-      <div className="h-full w-full px-4">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className={cn(
-            "w-full h-full",
-            "bg-background/5",
-            "rounded-xl overflow-hidden"
-          )}
-        >
+    <section className="w-full min-h-screen bg-background">
+      <motion.h2 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="text-4xl font-bold text-center py-8"
+      >
+        Things I Use Daily
+      </motion.h2>
+
+      <div className="w-screen h-[800px] bg-background">
+        <Suspense fallback={<LoadingScreen />}>
           <Canvas 
             shadows 
-            camera={{ position: [0, 3, 6], fov: 75 }}
-            style={{ 
-              background: 'transparent',
-              width: '100%',
-              height: '100%'
-            }}
+            camera={{ position: [0, 4, 8], fov: 75 }}
           >
             <color attach="background" args={['#020817']} />
             
@@ -106,7 +107,7 @@ const ThreeScene = () => {
               shadow-mapSize-width={1024}
               shadow-mapSize-height={1024}
             >
-              <orthographicCamera attach="shadow-camera" args={[-10, 10, -10, 10, 0.1, 50]} />
+              <orthographicCamera attach="shadow-camera" args={[-25, 25, -25, 25, 0.1, 50]} />
             </directionalLight>
 
             <Platform />
@@ -140,7 +141,7 @@ const ThreeScene = () => {
               maxAzimuthAngle={Math.PI / 4}
             />
           </Canvas>
-        </motion.div>
+        </Suspense>
       </div>
     </section>
   )
@@ -148,7 +149,7 @@ const ThreeScene = () => {
 
 export default ThreeScene
 
-// Preload all models
+// Preload models
 const models = [
   '/models/controller.glb',
   '/models/headphones.glb',
