@@ -15,28 +15,28 @@ const experiences: Experience[] = [
   { 
     title: "Programming & Game Development Instructor",
     company: "Code Ninjas",
-    description: "Worked with a team to teach game development, robotics and programming fundamentals with propietary platforms such as Unity, MakeCode, and VSCode to 200+ students of various ages.",
+    description: "I collaborated with a team of nine partners to establish a non-profit organization supporting the Oakville Milton Humane Society. I spearheaded efforts to generate revenue through bracelet sales and the development of a React-based website to increase community outreach and engagement. Leveraging my expertise in social media marketing, I developed strategies to amplify brand awareness, resulting in a 40% growth in online engagement. I also managed financial transactions, maintained expense reports, and oversaw fundraising events, ultimately helping the organization secure over $1,000 in donations.",
     icon: "💻",
     tools: ["Unity", "MakeCode", "VSCode"]
   },
   { 
     title: "Financial Officer",
     company: "WilderCare",
-    description: "Worked with 9 partners to help found a non-profit to support the Oakville Milton Humane Society through bracelet sales, social media and our React-based website.",
+    description: "I collaborated with a team of nine partners to establish a non-profit organization supporting the Oakville Milton Humane Society. I spearheaded efforts to generate revenue through bracelet sales and the development of a React-based website to increase community outreach and engagement. Leveraging my expertise in social media marketing, I developed strategies to amplify brand awareness, resulting in a 40% growth in online engagement. I also managed financial transactions, maintained expense reports, and oversaw fundraising events, ultimately helping the organization secure over $1,000 in donations.",
     icon: "💰",
     tools: ["React", "Social Media"]
   },
   { 
     title: "Programmer",
     company: "Orbit Robotics",
-    description: "Developed firmware for our team robot, by using WPILib, Java and GitHub to compete in the FIRST Robotics Competition at a Regional Level.",
+    description: "I contributed to the team’s success in the FIRST Robotics Competition at the regional level by designing and optimizing firmware for our robot. Using Java, WPILib, and version control tools like GitHub, I developed critical functions for motor and servo control, enabling precise and efficient robot motion. Additionally, I worked on the integration of pneumatic systems to enhance the robot’s grabbing mechanism, achieving a 50% improvement in its functionality during competitive tasks. My role also involved collaborating with mechanical and electrical team members to ensure seamless hardware-software integration.",
     icon: "🤖",
     tools: ["WPILib", "Java", "GitHub"]
   },
   { 
     title: "Firmware Developer",
     company: "UW Orbital",
-    description: "Contributed to the development of thermal control systems for CubeSat, implementing efficient algorithms for temperature regulation in space environments.",
+    description: "I played a critical role in the development of systems for a nanosatellite project, collaborating with a multidisciplinary team to design, test, and implement embedded software solutions. Leveraging my expertise in C/C++, RTOS, and I2C/SPI communication protocols, I contributed to the creation of reliable and efficient firmware to control and monitor the satellite's subsystems. My responsibilities included writing low-level drivers for sensors and actuators, integrating hardware components with the satellite's onboard computer, and performing rigorous simulations to validate functionality under various spaceflight conditions.",
     icon: "🛰️",
     tools: ["C++", "FreeRTOS", "Git"]
   }

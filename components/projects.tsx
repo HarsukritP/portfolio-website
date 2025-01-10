@@ -32,13 +32,6 @@ export function Projects() {
       tools: ["Python", "TensorFlow", "Keras", "NumPy"]
     },
     {
-      title: "UW Orbital Team Member",
-      description: "A member of the University of Waterloo Orbital Design Team, working specifically with the Thermal Firmware on the CubeSat.",
-      image: "./project3.png",
-      github: "https://www.uworbital.com/",
-      tools: ["C++", "Embedded Systems", "Thermal Analysis"]
-    },
-    {
       title: "Dormitory Security Alarm System",
       description: "Created a dorm room security device to track valuables, detect break-ins and alert users to protect them and their valuables.",
       image: "./project4.png",
