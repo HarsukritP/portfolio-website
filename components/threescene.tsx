@@ -60,11 +60,11 @@ const calculateCircularPosition = (index: number, total: number, radius: number)
 const Platform = () => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-      <planeGeometry args={[15, 8]} />
+      <planeGeometry args={[20, 10]} />
       <meshStandardMaterial 
         color="#020817"
         transparent
-        opacity={0.7}
+        opacity={0.3}
       />
     </mesh>
   )
@@ -75,37 +75,33 @@ const ThreeScene = () => {
   const radius = 3.5
 
   return (
-    <section className="min-h-[90vh] py-12">
-      <div className="container h-full">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-3xl font-bold text-center mb-8"
-        >
-          Things I Use Daily
-        </motion.h2>
+    <section className="h-screen w-full py-4">
+      <div className="h-full w-full px-4">
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className={cn(
-            "w-full h-[80vh]",
-            "bg-gradient-to-br from-primary/5 to-primary/10",
+            "w-full h-full",
+            "bg-background/5",
             "rounded-xl overflow-hidden"
           )}
         >
           <Canvas 
             shadows 
             camera={{ position: [0, 3, 6], fov: 75 }}
-            style={{ background: 'transparent' }}
+            style={{ 
+              background: 'transparent',
+              width: '100%',
+              height: '100%'
+            }}
           >
             <color attach="background" args={['#020817']} />
             
-            <ambientLight intensity={0.5} />
+            <ambientLight intensity={0.4} />
             <directionalLight
               position={[5, 5, 5]}
-              intensity={1}
+              intensity={0.8}
               castShadow
               shadow-mapSize-width={1024}
               shadow-mapSize-height={1024}
