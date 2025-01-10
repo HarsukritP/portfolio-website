@@ -136,7 +136,7 @@ export function Experiences() {
         <h2 className="text-3xl font-bold text-center mb-12">Experiences</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {experiences.map((exp, index) => (
-            <div key={index} className="h-[425px]">
+            <div key={index} className="h-[425px] sm:h-[450px]">
               <TiltCard experience={exp} />
             </div>
           ))}
