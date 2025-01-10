@@ -34,16 +34,16 @@ export function Projects() {
     {
       title: "Dormitory Security Alarm System",
       description: "Created a dorm room security device to track valuables, detect break-ins and alert users to protect them and their valuables.",
-      image: "./project4.png",
+      image: "./project3.png",
       github: "https://github.com/HarsukritP/ECE198-Alarm-System",
-      tools: ["Arduino", "C++", "IoT"]
+      tools: ["STM32 Nucleoboard", "C++", "IoT", "C"]
     },
     {
       title: "Elden Ring Weapons Browser",
       description: "Utilizes scraped data from the video game to simulate weapon stats for 1000+ cases by utilizing OOP to factor in game conditions.",
-      image: "./project5.png",
+      image: "./project4.png",
       github: "https://github.com/HarsukritP/EldenRingWeaponBrowser",
-      tools: ["Python", "BeautifulSoup", "Pandas", "OOP"]
+      tools: ["Python", "Pandas", "Object Oriented Programming"]
     },
   ]
 

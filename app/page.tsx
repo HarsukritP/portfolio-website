@@ -3,6 +3,7 @@ import { Projects } from "@/components/projects"
 import { Contact } from "@/components/contact"
 import { About } from "@/components/about"
 import { Experiences } from "@/components/experiences"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Projects />
       <Experiences />
       <Contact />
+      <Footer />
     </>
   )
 }
