@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 interface Experience {
@@ -62,7 +62,7 @@ const experiences: Experience[] = [
       "Performed rigorous simulations to validate functionality under various spaceflight conditions"
     ],
     icon: "🛰️",
-    tools: ["C++", "FreeRTOS", "Git", "I2C", "SPI"]
+    tools: ["C++", "FreeRTOS", "Git", "I2C/SPI"]
   }
 ]
 
@@ -130,13 +130,62 @@ const TiltCard: React.FC<{ experience: Experience }> = ({ experience }) => {
 }
 
 export function Experiences() {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [maxHeight, setMaxHeight] = useState<number>(0)
+
+  useEffect(() => {
+    if (!gridRef.current) return
+
+    const updateHeights = () => {
+      if (!gridRef.current) return
+      
+      // Reset the height to auto to get true content height
+      const cards = gridRef.current.querySelectorAll('.experience-card')
+      cards.forEach(card => {
+        (card as HTMLElement).style.height = 'auto'
+      })
+
+      // Wait for next frame to ensure content is reflowed
+      requestAnimationFrame(() => {
+        if (!gridRef.current) return
+        
+        // Calculate max height
+        const heights = Array.from(cards).map(card => card.getBoundingClientRect().height)
+        const newMaxHeight = Math.max(...heights)
+        
+        // Apply max height to all cards
+        cards.forEach(card => {
+          (card as HTMLElement).style.height = `${newMaxHeight}px`
+        })
+        
+        setMaxHeight(newMaxHeight)
+      })
+    }
+
+    // Create ResizeObserver to watch for size changes
+    const resizeObserver = new ResizeObserver(() => {
+      updateHeights()
+    })
+
+    // Observe the grid container
+    resizeObserver.observe(gridRef.current)
+
+    // Initial height calculation
+    updateHeights()
+
+    // Cleanup
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
   return (
     <section id="experiences" className="py-24">
       <div className="container">
         <h2 className="text-3xl font-bold text-center mb-12">Experiences</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {experiences.map((exp, index) => (
-            <div key={index} className="h-[425px] sm:h-[450px]">
+            <div key={index} className="experience-card" style={{ height: maxHeight || 'auto' }}>
               <TiltCard experience={exp} />
             </div>
           ))}
