@@ -22,8 +22,9 @@ const nextConfig = {
     parallelServerCompiles: true,
   },
   output: 'export',
-  basePath: ''
+  trailingSlash: true,
 }
+
 
 mergeConfig(nextConfig, userConfig)
 
