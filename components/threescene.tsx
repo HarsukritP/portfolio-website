@@ -1,18 +1,9 @@
 "use client"
 
-import React, { useRef, useState, Suspense, useEffect } from 'react'
+import React, { useRef, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, useGLTF } from '@react-three/drei'
+import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { cn } from '@/lib/utils'
-
-// Preload models immediately
-const models = [
-  '/models/controller.glb',
-  '/models/headphones.glb',
-  '/models/laptop.glb',
-  '/models/basketball.glb'
-].map(path => useGLTF.preload(path))
 
 interface Model3DProps {
   position: [number, number, number]
@@ -20,14 +11,6 @@ interface Model3DProps {
   scale?: number
 }
 
-const calculateCircularPosition = (index: number, total: number, radius: number): [number, number, number] => {
-  const angle = (index / total) * Math.PI * 2 - Math.PI / 2
-  const x = Math.cos(angle) * radius * 1.5
-  const z = Math.sin(angle) * radius
-  return [x, 0.5, z]
-}
-
-// Optimized Model3D component with instance reuse
 const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) => {
   const { scene } = useGLTF(modelPath)
   const [isHovered, setIsHovered] = useState(false)
@@ -52,59 +35,50 @@ const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) =>
     groupRef.current.rotation.y += delta * 0.5
   })
 
-  // Reuse the same scene instance
-  useEffect(() => {
-    if (groupRef.current) {
-      groupRef.current.add(scene.clone())
-    }
-  }, [scene])
-
   return (
     <group
       ref={groupRef}
       position={position}
-      scale={scale}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
-    />
+    >
+      <primitive object={scene.clone()} scale={scale} />
+    </group>
   )
 })
 
 Model3D.displayName = 'Model3D'
 
-const LoadingScreen = () => (
-  <div className="absolute bottom-4 right-4 text-sm text-muted-foreground">
-    Loading 3D models...
-  </div>
-)
-
 const Platform = () => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
-      <planeGeometry args={[50, 25]} />
+      <planeGeometry args={[16, 8]} />
       <meshStandardMaterial 
         color="#020817"
         transparent
-        opacity={0.1}
+        opacity={0.05}
       />
     </mesh>
   )
 }
 
-const ThreeScene = () => {
-  const totalItems = 4
-  const radius = 5
-
+export function ThreeScene() {
   return (
-    <section className="w-full min-h-screen bg-background">
-      <div className="w-screen h-[800px] bg-background border border-dashed border-primary/20"> {/* Debug outline */}
-        <Suspense fallback={<LoadingScreen />}>
+    <section className="w-full h-[600px]">
+      <div className="w-full h-full bg-background">
+        <Suspense fallback={
+          <div className="absolute bottom-4 right-4 text-xs text-muted-foreground">
+            Loading models...
+          </div>
+        }>
           <Canvas 
             shadows 
-            camera={{ position: [0, 4, 8], fov: 75 }}
-            // Performance optimizations
-            dpr={[1, 2]} // Limit pixel ratio
-            performance={{ min: 0.5 }} // Allow frame drops for better performance
+            camera={{ 
+              position: [0, 4, 8],
+              fov: 50,
+              rotation: [-0.3, 0, 0]
+            }}
+            dpr={[1, 2]}
           >
             <color attach="background" args={['#020817']} />
             
@@ -113,41 +87,29 @@ const ThreeScene = () => {
               position={[5, 5, 5]}
               intensity={0.8}
               castShadow
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-            >
-              <orthographicCamera attach="shadow-camera" args={[-25, 25, -25, 25, 0.1, 50]} />
-            </directionalLight>
+            />
 
             <Platform />
             
             <Model3D 
-              position={calculateCircularPosition(0, totalItems, radius)}
+              position={[-4, 0.5, -1]}
               modelPath="/models/controller.glb"
-              scale={4.5}
+              scale={1.5}
             />
             <Model3D 
-              position={calculateCircularPosition(1, totalItems, radius)}
+              position={[-1.5, 0.5, -0.5]}
               modelPath="/models/headphones.glb"
+              scale={1.5}
+            />
+            <Model3D 
+              position={[1.5, 0.5, -0.5]}
+              modelPath="/models/laptop.glb"
               scale={0.5}
             />
             <Model3D 
-              position={calculateCircularPosition(2, totalItems, radius)}
-              modelPath="/models/laptop.glb"
-              scale={0.01}
-            />
-            <Model3D 
-              position={calculateCircularPosition(3, totalItems, radius)}
+              position={[4, 0.5, -1]}
               modelPath="/models/basketball.glb"
-              scale={0.2}
-            />
-
-            <OrbitControls
-              enableZoom={false}
-              minPolarAngle={Math.PI / 3}
-              maxPolarAngle={Math.PI / 2.5}
-              minAzimuthAngle={-Math.PI / 4}
-              maxAzimuthAngle={Math.PI / 4}
+              scale={1.3}
             />
           </Canvas>
         </Suspense>
@@ -155,5 +117,3 @@ const ThreeScene = () => {
     </section>
   )
 }
-
-export default ThreeScene
