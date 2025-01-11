@@ -19,17 +19,17 @@ const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) =>
   // Physics state
   const positionY = useRef(position[1])
   const velocityY = useRef(0)
-  const rotationY = useRef(0)
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
 
     // Constants
-    const gravity = 9.81
-    const springStrength = 80
-    const damping = 4
+    const gravity = 15 // Increased gravity for faster drop
+    const springStrength = 40 // Reduced for slower lift
+    const damping = 0.7 // Less damping for more bounce
     const restHeight = position[1]
-    const maxHeight = position[1] + 1.0
+    const maxHeight = position[1] + 2.0 // Higher lift
+    const groundLevel = position[1] // Ground level for collision
     
     // Target height based on hover state
     const targetHeight = isHovered ? maxHeight : restHeight
@@ -42,20 +42,23 @@ const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) =>
     const gravityForce = isHovered ? 0 : -gravity
     const totalForce = springForce + gravityForce
     
-    // Euler integration
-    // Update velocity (F = ma, assume mass = 1)
-    velocityY.current += totalForce * delta
+    // Update velocity with reduced time step for stability
+    velocityY.current += totalForce * (delta * 0.7) // Slowed down time step
+    
     // Apply damping
     velocityY.current *= (1 - damping * delta)
+    
     // Update position
     positionY.current += velocityY.current * delta
     
+    // Ground collision with slight bounce
+    if (positionY.current < groundLevel) {
+      positionY.current = groundLevel
+      velocityY.current = Math.abs(velocityY.current) * 0.3 // 30% bounce
+    }
+    
     // Apply position
     groupRef.current.position.set(position[0], positionY.current, position[2])
-
-    // Gentle self-rotation that stays in place
-    rotationY.current += delta * 0.5
-    groupRef.current.rotation.y = rotationY.current
   })
 
   return (
@@ -98,9 +101,7 @@ export function ThreeScene() {
             shadows 
             camera={{ 
               position: [0, 4, 8],
-              fov: 50,
-              // Lock camera rotation by removing this
-              // rotation: [-0.3, 0, 0]
+              fov: 50
             }}
             dpr={[1, 2]}
           >
