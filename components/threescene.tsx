@@ -124,22 +124,22 @@ const ThreeScene = () => {
             <Model3D 
               position={calculateCircularPosition(0, totalItems, radius)}
               modelPath="/models/controller.glb"
-              scale={1.5}
+              scale={4.5}
             />
             <Model3D 
               position={calculateCircularPosition(1, totalItems, radius)}
               modelPath="/models/headphones.glb"
-              scale={1.5}
+              scale={0.5}
             />
             <Model3D 
               position={calculateCircularPosition(2, totalItems, radius)}
               modelPath="/models/laptop.glb"
-              scale={0.5}
+              scale={0.01}
             />
             <Model3D 
               position={calculateCircularPosition(3, totalItems, radius)}
               modelPath="/models/basketball.glb"
-              scale={1.3}
+              scale={0.2}
             />
 
             <OrbitControls
