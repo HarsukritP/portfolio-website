@@ -4,7 +4,7 @@ export function Footer() {
         <p>
           Made by Harsukrit Pall using{' '}
           <span className="text-primary">
-            Next.js, TypeScript, Tailwind CSS, and Framer Motion
+            Next.js, TypeScript, Tailwind CSS, Three.js and Framer Motion
           </span>{' '}
           in January 2025.
         </p>

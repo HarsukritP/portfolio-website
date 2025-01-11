@@ -5,7 +5,7 @@ import { About } from "@/components/about"
 import { Experiences } from "@/components/experiences"
 import { Footer } from "@/components/footer"
 import { Interactive } from "@/components/interactive"
-
+import { TechStack } from "@/components/techstack"
 
 
 export default function Home() {
@@ -14,6 +14,7 @@ export default function Home() {
       <Hero />
       <About />
       <Interactive />
+      <TechStack />
       <Projects />
       <Experiences />
       <Contact />
