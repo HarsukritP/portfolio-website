@@ -7,64 +7,54 @@ import * as THREE from 'three'
 
 interface Model3DProps {
   position: [number, number, number]
+  rotation?: [number, number, number] // Added rotation parameter
   modelPath: string
   scale?: number
 }
 
-const Model3D = React.memo(({ position, modelPath, scale = 1 }: Model3DProps) => {
+const Model3D = React.memo(({ position, rotation = [0, 0, 0], modelPath, scale = 1 }: Model3DProps) => {
   const { scene } = useGLTF(modelPath)
   const [isHovered, setIsHovered] = useState(false)
   const groupRef = useRef<THREE.Group>(null)
   
-  // Physics state
   const positionY = useRef(position[1])
   const velocityY = useRef(0)
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
 
-    // Constants
-    const gravity = 15 // Increased gravity for faster drop
-    const springStrength = 40 // Reduced for slower lift
-    const damping = 0.7 // Less damping for more bounce
+    const gravity = 15
+    const springStrength = 40
+    const damping = 0.7
     const restHeight = position[1]
-    const maxHeight = position[1] + 2.0 // Higher lift
-    const groundLevel = position[1] // Ground level for collision
+    const maxHeight = position[1] + 2.0
+    const groundLevel = position[1]
     
-    // Target height based on hover state
     const targetHeight = isHovered ? maxHeight : restHeight
-    
-    // Calculate spring force (F = -kx)
     const displacement = positionY.current - targetHeight
     const springForce = -springStrength * displacement
-    
-    // Calculate total force including gravity when falling
     const gravityForce = isHovered ? 0 : -gravity
     const totalForce = springForce + gravityForce
     
-    // Update velocity with reduced time step for stability
-    velocityY.current += totalForce * (delta * 0.7) // Slowed down time step
-    
-    // Apply damping
+    velocityY.current += totalForce * (delta * 0.7)
     velocityY.current *= (1 - damping * delta)
-    
-    // Update position
     positionY.current += velocityY.current * delta
     
-    // Ground collision with slight bounce
     if (positionY.current < groundLevel) {
       positionY.current = groundLevel
-      velocityY.current = Math.abs(velocityY.current) * 0.3 // 30% bounce
+      velocityY.current = Math.abs(velocityY.current) * 0.3
     }
     
-    // Apply position
+    // Apply position while maintaining set rotation
     groupRef.current.position.set(position[0], positionY.current, position[2])
+    groupRef.current.rotation.set(rotation[0], rotation[1], rotation[2])
   })
 
   return (
     <group
       ref={groupRef}
       position={position}
+      rotation={[rotation[0], rotation[1], rotation[2]]}
       onPointerOver={() => setIsHovered(true)}
       onPointerOut={() => setIsHovered(false)}
     >
@@ -118,21 +108,25 @@ export function ThreeScene() {
             
             <Model3D 
               position={[-4, 0.5, -1]}
+              rotation={[0, Math.PI * 0.1, 0]} // Slight turn right
               modelPath="/models/controller.glb"
               scale={2.0}
             />
             <Model3D 
               position={[-1.5, 0.5, -0.5]}
+              rotation={[0, -Math.PI * 0.2, 0]} // Turn left
               modelPath="/models/headphones.glb"
               scale={0.6}
             />
             <Model3D 
               position={[1.5, 0.5, -0.5]}
+              rotation={[0, Math.PI * 0.8, 0]} // Face forward-right
               modelPath="/models/laptop.glb"
               scale={0.09}
             />
             <Model3D 
               position={[4, 0.5, -1]}
+              rotation={[0, -Math.PI * 0.1, 0]} // Slight turn left
               modelPath="/models/basketball.glb"
               scale={0.6}
             />
