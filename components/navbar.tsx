@@ -71,7 +71,7 @@ export function Navbar() {
           </Button>
           
             <Link 
-              href="https://drive.google.com/file/d/1wfcqROW9gDPGg2ixuHzVSBuFeL-ECmjj/view?usp=sharing" 
+              href="https://drive.google.com/file/d/14SpcDm1d-K3mT9KRdOKGnAXZjHgIJIZc/view?usp=sharing" 
             > <Button variant="outline" size="sm"> <FileText className="h-4 w-4"/> Resume </Button>
             
             </Link>
