@@ -5,8 +5,6 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useTheme } from "next-themes"
-import { motion, AnimatePresence } from "framer-motion"
-import { TypewriterEffect } from "./ui/typewriter-effect"
 
 const MODELS = [
   '/models/optimized/controller.glb',
@@ -16,45 +14,6 @@ const MODELS = [
   '/models/optimized/dumbell.glb'
 ]
 
-const MODEL_DESCRIPTIONS = {
-  'controller': [
-    { text: "Gaming", className: "text-primary-foreground" },
-    { text: "Controller:", className: "text-primary-foreground" },
-    { text: "Perfect", className: "text-primary" },
-    { text: "for", className: "text-primary-foreground" },
-    { text: "immersive", className: "text-primary" },
-    { text: "gameplay", className: "text-primary" }
-  ],
-  'headphones': [
-    { text: "Premium", className: "text-primary" },
-    { text: "Headphones:", className: "text-primary-foreground" },
-    { text: "Crystal", className: "text-primary" },
-    { text: "clear", className: "text-primary" },
-    { text: "audio", className: "text-primary-foreground" }
-  ],
-  'laptop': [
-    { text: "Powerful", className: "text-primary" },
-    { text: "Laptop:", className: "text-primary-foreground" },
-    { text: "Your", className: "text-primary-foreground" },
-    { text: "portable", className: "text-primary" },
-    { text: "workstation", className: "text-primary" }
-  ],
-  'basketball': [
-    { text: "Basketball:", className: "text-primary-foreground" },
-    { text: "Ready", className: "text-primary" },
-    { text: "for", className: "text-primary-foreground" },
-    { text: "the", className: "text-primary-foreground" },
-    { text: "court", className: "text-primary" }
-  ],
-  'dumbell': [
-    { text: "Dumbbell:", className: "text-primary-foreground" },
-    { text: "Stay", className: "text-primary" },
-    { text: "fit", className: "text-primary" },
-    { text: "and", className: "text-primary-foreground" },
-    { text: "strong", className: "text-primary" }
-  ]
-}
-
 MODELS.forEach(path => useGLTF.preload(path))
 
 interface Model3DProps {
@@ -63,7 +22,6 @@ interface Model3DProps {
   modelPath: string
   scale?: number
   hitboxScale?: number
-  onHover: (isHovered: boolean, modelName: string) => void
 }
 
 const Model3D = React.memo(({ 
@@ -71,8 +29,7 @@ const Model3D = React.memo(({
   rotation = [0, 0, 0], 
   modelPath, 
   scale = 1,
-  hitboxScale = 2,
-  onHover
+  hitboxScale = 2
 }: Model3DProps) => {
   const { scene } = useGLTF(modelPath)
   const [isHovered, setIsHovered] = useState(false)
@@ -83,10 +40,63 @@ const Model3D = React.memo(({
   const velocityY = useRef(0)
   const lastUpdateTime = useRef(performance.now())
 
-  const modelName = modelPath.split('/').pop()?.split('.')[0] || ''
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        positionY.current = position[1]
+        velocityY.current = 0
+        lastUpdateTime.current = performance.now()
+      }
+    }
 
-  // ... rest of the Model3D implementation remains the same ...
-  
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [position])
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return
+
+    const maxDelta = Math.min(delta, 1 / 30)
+    
+    const gravity = 15
+    const springStrength = 40
+    const damping = 0.7
+    const restHeight = position[1]
+    const maxHeight = position[1] + 1.3
+    const groundLevel = position[1]
+    
+    const targetHeight = isHovered ? maxHeight : restHeight
+    const displacement = positionY.current - targetHeight
+    const springForce = -springStrength * displacement
+    const gravityForce = isHovered ? 0 : -gravity
+    const totalForce = springForce + gravityForce
+    
+    velocityY.current += totalForce * (maxDelta * 0.7)
+    velocityY.current *= (1 - damping * maxDelta)
+    positionY.current += velocityY.current * maxDelta
+    
+    if (positionY.current < groundLevel) {
+      positionY.current = groundLevel
+      velocityY.current = Math.abs(velocityY.current) * 0.3
+      
+    }
+    
+    groupRef.current.position.set(position[0], positionY.current, position[2])
+    groupRef.current.rotation.set(rotation[0], rotation[1], rotation[2])
+
+    frameRef.current = requestAnimationFrame(() => {
+      lastUpdateTime.current = performance.now()
+    })
+  })
+
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current)
+      }
+    }
+  }, [])
+
   return (
     <group
       ref={groupRef}
@@ -94,14 +104,8 @@ const Model3D = React.memo(({
       rotation={[rotation[0], rotation[1], rotation[2]]}
     >
       <mesh
-        onPointerOver={() => {
-          setIsHovered(true)
-          onHover(true, modelName)
-        }}
-        onPointerOut={() => {
-          setIsHovered(false)
-          onHover(false, modelName)
-        }}
+        onPointerOver={() => setIsHovered(true)}
+        onPointerOut={() => setIsHovered(false)}
         visible={false}
       >
         <boxGeometry args={[1.5 * hitboxScale, 1.5 * hitboxScale, 1.5 * hitboxScale]} />
@@ -117,44 +121,9 @@ Model3D.displayName = 'Model3D'
 export function ThreeScene() {
   const { theme } = useTheme()
   const backgroundColor = theme === "light" ? "#FFF6EB" : "#1C1E21"
-  const [hoveredModel, setHoveredModel] = useState<string | null>(null)
-  const [showDescription, setShowDescription] = useState(false)
-
-  const handleModelHover = (isHovered: boolean, modelName: string) => {
-    if (isHovered) {
-      setHoveredModel(modelName)
-      setShowDescription(true)
-    } else {
-      setShowDescription(false)
-      // Don't immediately clear hoveredModel to allow for fade-out animation
-      setTimeout(() => {
-        setHoveredModel(null)
-      }, 500)
-    }
-  }
 
   return (
-    <section className="w-full h-[650px] relative">
-      <div className="absolute top-8 left-0 right-0 z-10">
-        <AnimatePresence mode="wait">
-          {hoveredModel && (
-            <motion.div
-              key={hoveredModel}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col items-center justify-center gap-4"
-            >
-              <TypewriterEffect 
-                words={MODEL_DESCRIPTIONS[hoveredModel as keyof typeof MODEL_DESCRIPTIONS]}
-                className="text-2xl"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      
+    <section className="w-full h-[650px]">
       <div className="w-full h-full bg-background">
         <Suspense fallback={null}>
           <Canvas 
@@ -175,14 +144,12 @@ export function ThreeScene() {
               intensity={5}
             />
             
-            {/* Model3D components remain the same */}
             <Model3D 
               position={[-2.0, 0, -0.75]}
               rotation={[-Math.PI * 0.5, Math.PI * 1, -Math.PI * 0.09]} 
               modelPath="/models/optimized/controller.glb"
               scale={3}
               hitboxScale={2}
-              onHover={handleModelHover}
             />
             <Model3D 
               position={[1.5, 0, -4.0]}
@@ -190,7 +157,6 @@ export function ThreeScene() {
               modelPath="/models/optimized/headphones.glb"
               scale={1}
               hitboxScale={3}
-              onHover={handleModelHover}
             />
             <Model3D 
               position={[4.5, 0, 1.5]}
@@ -198,7 +164,6 @@ export function ThreeScene() {
               modelPath="/models/optimized/laptop.glb"
               scale={0.09}
               hitboxScale={2.0}
-              onHover={handleModelHover}
             />
             <Model3D 
               position={[-5.5, 0, 0.5]}
@@ -206,7 +171,6 @@ export function ThreeScene() {
               modelPath="/models/optimized/basketball.glb"
               scale={0.7}
               hitboxScale={1.5}
-              onHover={handleModelHover}
             />
             <Model3D 
               position={[-0.5, 0, 4]}
@@ -214,7 +178,6 @@ export function ThreeScene() {
               modelPath="/models/optimized/dumbell.glb"
               scale={0.4}
               hitboxScale={1.5}
-              onHover={handleModelHover}
             />
           </Canvas>
         </Suspense>
