@@ -70,7 +70,7 @@ export function Navbar() {
 
             <Button variant="outline" size="sm" onClick={() => setIsResumeModalOpen(true)}>
               <FileText className="h-4 w-4 mr-2" />
-              Resume
+              Request Resume
             </Button>
           </div>
         </div>
