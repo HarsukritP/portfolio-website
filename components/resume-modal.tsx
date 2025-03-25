@@ -9,12 +9,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { X } from "lucide-react"
 import emailjs from '@emailjs/browser'
 
-// Replace these with your actual EmailJS IDs
-const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID"
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY"
-const EMAILJS_NOTIFICATION_TEMPLATE_ID = "YOUR_NOTIFICATION_TEMPLATE_ID"
-// Only needed if not using template hooks for auto-reply
-// const EMAILJS_AUTOREPLY_TEMPLATE_ID = "YOUR_AUTOREPLY_TEMPLATE_ID"
+// Use environment variables for sensitive information
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || ""
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || ""
+const EMAILJS_NOTIFICATION_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_NOTIFICATION_TEMPLATE_ID || ""
 
 interface ResumeModalProps {
   isOpen: boolean
@@ -41,31 +39,30 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     setSubmitError("")
 
     try {
+      // Validate EmailJS configuration
+      if (!EMAILJS_SERVICE_ID || !EMAILJS_PUBLIC_KEY || !EMAILJS_NOTIFICATION_TEMPLATE_ID) {
+        throw new Error("EmailJS configuration is incomplete. Please check your service ID, template ID, and public key.")
+      }
+
       // Prepare the template parameters for both email templates
       const templateParams = {
         from_name: name,
         from_email: email,
-        subject: subject,
+        subject: subject || "Resume Request",
         message: message,
         date: new Date().toLocaleString()
       }
 
+      console.log("Sending email with params:", templateParams)
+      
       // Send notification email to you
-      await emailjs.send(
+      const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_NOTIFICATION_TEMPLATE_ID,
         templateParams
       )
-
-      // If you're not using EmailJS template hooks for auto-reply,
-      // uncomment this block to send the auto-reply manually
-      /*
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_AUTOREPLY_TEMPLATE_ID,
-        templateParams
-      )
-      */
+      
+      console.log("Email sent successfully:", response)
 
       // Handle success
       setSubmitSuccess(true)
@@ -83,7 +80,25 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
       }, 2000)
     } catch (error) {
       console.error("Failed to send email:", error)
-      setSubmitError("Failed to send email. Please try again later.")
+      
+      // Provide more specific error message based on the error
+      let errorMessage = "Failed to send email. Please try again later."
+      
+      if (error instanceof Error) {
+        // Check for common EmailJS errors
+        if (error.message.includes("Invalid service ID") || 
+            error.message.includes("Invalid template ID") ||
+            error.message.includes("Invalid public key")) {
+          errorMessage = "Email service configuration error. Please contact the site owner."
+        } else if (error.message.includes("Network Error") || error.message.includes("timeout")) {
+          errorMessage = "Network error. Please check your internet connection and try again."
+        } else if (error.message) {
+          // Include the actual error message for debugging (you may want to remove this in production)
+          errorMessage = `Error: ${error.message}`
+        }
+      }
+      
+      setSubmitError(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
