@@ -2,11 +2,19 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { X } from "lucide-react"
+import emailjs from '@emailjs/browser'
+
+// Replace these with your actual EmailJS IDs
+const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID"
+const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY"
+const EMAILJS_NOTIFICATION_TEMPLATE_ID = "YOUR_NOTIFICATION_TEMPLATE_ID"
+// Only needed if not using template hooks for auto-reply
+// const EMAILJS_AUTOREPLY_TEMPLATE_ID = "YOUR_AUTOREPLY_TEMPLATE_ID"
 
 interface ResumeModalProps {
   isOpen: boolean
@@ -22,27 +30,63 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Initialize EmailJS once when component mounts
+  useEffect(() => {
+    emailjs.init(EMAILJS_PUBLIC_KEY)
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitError("")
 
-    // For now, we'll use mailto as a fallback since EmailJS requires API keys
-    const mailtoLink = `mailto:harsukritspall@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`)}`
-    window.location.href = mailtoLink
+    try {
+      // Prepare the template parameters for both email templates
+      const templateParams = {
+        from_name: name,
+        from_email: email,
+        subject: subject,
+        message: message,
+        date: new Date().toLocaleString()
+      }
 
-    // Reset form
-    setName("")
-    setEmail("")
-    setSubject("")
-    setMessage("")
-    setIsSubmitting(false)
-    setSubmitSuccess(true)
+      // Send notification email to you
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_NOTIFICATION_TEMPLATE_ID,
+        templateParams
+      )
 
-    // Close modal after success
-    setTimeout(() => {
-      onClose()
-      setSubmitSuccess(false)
-    }, 2000)
+      // If you're not using EmailJS template hooks for auto-reply,
+      // uncomment this block to send the auto-reply manually
+      /*
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_AUTOREPLY_TEMPLATE_ID,
+        templateParams
+      )
+      */
+
+      // Handle success
+      setSubmitSuccess(true)
+      
+      // Reset form
+      setName("")
+      setEmail("")
+      setSubject("")
+      setMessage("")
+      
+      // Close modal after success
+      setTimeout(() => {
+        onClose()
+        setSubmitSuccess(false)
+      }, 2000)
+    } catch (error) {
+      console.error("Failed to send email:", error)
+      setSubmitError("Failed to send email. Please try again later.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (!isOpen) return null
@@ -88,12 +132,14 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
             </div>
             <div>
               <Textarea
-                placeholder="Your message"
+                placeholder="Your message (optional)"
                 className="resize-none h-[100px] overflow-y-auto"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                required
               />
+              <p className="text-xs text-muted-foreground mt-1 italic">
+                Feel free to include any specific questions or information.
+              </p>
               <p className="text-xs text-muted-foreground mt-1 italic">
                 I will try to get back to you within 24 hours.
               </p>
@@ -112,4 +158,3 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
     </div>
   )
 }
-
