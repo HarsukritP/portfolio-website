@@ -18,19 +18,15 @@ export const TypewriterEffect = ({
 
   useEffect(() => {
     const typewriterAnimation = async () => {
-      const letters = scope.current.querySelectorAll('.letter')
-      
+      const letters = scope.current.querySelectorAll(".letter")
+
       for (let i = 0; i < letters.length; i++) {
-        await animate(
-          letters[i],
-          { opacity: 1, y: 0 },
-          { duration: 0.1 }
-        )
+        await animate(letters[i], { opacity: 1, y: 0 }, { duration: 0.1 })
       }
     }
 
     typewriterAnimation()
-  }, [])
+  }, [animate])
 
   const renderWords = () => {
     return (
@@ -42,7 +38,10 @@ export const TypewriterEffect = ({
                 <motion.span
                   initial={{ opacity: 0, y: 20 }}
                   key={`${letter}-${letterIdx}`}
-                  className={cn("letter inline-block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold", word.className)}
+                  className={cn(
+                    "letter inline-block text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold",
+                    word.className,
+                  )}
                 >
                   {letter}
                 </motion.span>
@@ -54,10 +53,6 @@ export const TypewriterEffect = ({
     )
   }
 
-  return (
-    <div className={cn("text-center", className)}>
-      {renderWords()}
-    </div>
-  )
+  return <div className={cn("text-center", className)}>{renderWords()}</div>
 }
 
